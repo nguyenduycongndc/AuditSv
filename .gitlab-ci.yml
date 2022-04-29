@@ -1,0 +1,30 @@
+image : mcr.microsoft.com/dotnet/sdk:5.0
+
+stages:
+  - analyze
+  - build
+  - test
+
+analyze:
+  stage: analyze
+  script:
+    - export PATH=$PATH:$HOME/.dotnet/tools
+    - dotnet sonarscanner begin /k:"Kitano_Audit_Service" /d:sonar.login="a35b3a2eacf1086681483f3db5b48eb5ca622b79" /d:sonar.host.url="http://127.0.0.1:9000"
+    - dotnet build
+    - dotnet sonarscanner end /d:sonar.login="a35b3a2eacf1086681483f3db5b48eb5ca622b79"
+  only:
+    - Developer
+
+build:
+  stage: build
+  script:
+    - dotnet build
+  only:
+    - Developer
+
+test:
+  stage: test
+  script:
+    - dotnet test
+  only:
+    - Developer
